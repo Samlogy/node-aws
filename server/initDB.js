@@ -2,7 +2,26 @@ const pool = require("./db"); // Import the PostgreSQL connection pool
 
 const initDB = async () => {
   try {
-    // Create the todos table if it does not exist
+    const tableExistsQuery = `
+      SELECT EXISTS (
+        SELECT FROM pg_tables 
+        WHERE tablename = 'todos'
+      );
+    `;
+    const tableExistsResult = await pool.query(tableExistsQuery);
+    const tableExists = tableExistsResult.rows[0].exists;
+
+    if (tableExists) {
+      const countQuery = 'SELECT COUNT(*) FROM todos';
+      const countResult = await pool.query(countQuery);
+      const rowCount = parseInt(countResult.rows[0].count, 10);
+
+      if (rowCount > 0) {
+        console.log("Todos table already exists and contains data.");
+        return;
+      }
+    }
+
     const createTableQuery = `
       CREATE TABLE IF NOT EXISTS todos (
         id SERIAL PRIMARY KEY,
@@ -11,9 +30,8 @@ const initDB = async () => {
         completed BOOLEAN DEFAULT FALSE
       );
     `;
-
     await pool.query(createTableQuery);
-    console.log("Todos table created or already exists.");
+    console.log("Todos table created.");
 
     const TODOS = [
       {
@@ -38,8 +56,7 @@ const initDB = async () => {
       },
       {
         userId: 1,
-        title:
-          "laboriosam mollitia et enim quasi adipisci quia provident illum",
+        title: "laboriosam mollitia et enim quasi adipisci quia provident illum",
         completed: false,
       },
       {
@@ -54,7 +71,6 @@ const initDB = async () => {
       },
       {
         userId: 1,
-
         title: "quo adipisci enim quam ut ab",
         completed: true,
       },
@@ -79,7 +95,7 @@ const initDB = async () => {
       await pool.query(insertQuery, [todo.title, todo.userId, todo.completed]);
     }
 
-    console.log("Initial todos added.");
+    console.log("DB todos added!");
   } catch (error) {
     console.error("Error initializing database:", error);
   }

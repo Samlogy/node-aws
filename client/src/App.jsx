@@ -6,8 +6,8 @@ function App() {
   const [todos, setTodos] = useState([]);
   const [inputValue, setInputValue] = useState('');
 
-  const addTodo = (todoText) => { // http://localhost:4002/
-    axios.post('/apitodos', { title: todoText, userId: 1, completed: false })
+  const addTodo = (todoText) => {
+    axios.post('http://localhost:4002/todos', { title: todoText, userId: 1, completed: false })
       .then(res => setTodos([...todos, res.data]))
       .catch(err => console.error('Error adding todo:', err));
   };
@@ -19,7 +19,7 @@ function App() {
   };
 
   const loadTodos = () => {
-    axios.get('/api/todos')
+    axios.get('http://localhost:4002/todos')
       .then(res => {
         console.log('data => ', res.data);
         setTodos(res.data);

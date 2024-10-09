@@ -17,19 +17,34 @@ app.get('/health', (req, res) => {
 
 app.get('/todos', async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM todos'); // Query the database
-    res.status(200).json(result.rows); // Send back the rows
+    const result = await pool.query('SELECT * FROM todos');
+    res.status(200).json(result.rows);
   } catch (error) {
     console.error('Error fetching todos:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });
 
+app.get('/todos/:id', async (req, res) => {
+  const id = parseInt(req.params.id); 
+  try {
+    const result = await pool.query('SELECT * FROM todos WHERE id = $1', [id]);
+    if (result.rowCount > 0) {
+      res.status(200).json(result.rows[0]);
+    } else {
+      res.status(404).json({ message: 'Todo not found' });
+    }
+  } catch (error) {
+    console.error('Error fetching todo:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
 app.post('/todos', async (req, res) => {
-  const { title, userId, completed } = req.body; // Get the text from the request body
+  const { title, userId, completed } = req.body;
   try {  
-    const result = await pool.query("INSERT INTO todos (title, userId, completed) VALUES ($1, $2, $3) RETURNING *", [title, userId, completed]); // Insert into the database
-    res.status(201).json(result.rows[0]); // Return the newly created todo
+    const result = await pool.query("INSERT INTO todos (title, userId, completed) VALUES ($1, $2, $3) RETURNING *", [title, userId, completed]);
+    res.status(201).json(result.rows[0]); 
   } catch (error) {
     console.error('Error adding todo:', error);
     res.status(500).json({ message: 'Internal server error' });
@@ -55,6 +70,8 @@ app.listen(PORT, () => {
   initDB();
   console.log(`Server => http://localhost:${PORT}`);
 });
+
+module.exports = app;
 
 process.on('SIGINT', () => {
   console.log('Shutting down gracefully...');
