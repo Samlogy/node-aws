@@ -1,28 +1,20 @@
 const request = require('supertest');
-const pool = require('../db');
-const app = require('../index');
+const pool = require('../../db');
+const app = require('../../index');
 
-let todoIdExist; // Will store the ID of a created todo for later tests
+let todoIdExist; 
 
-// Before all tests, seed the database with initial data
 beforeAll(async () => {
   await pool.connect(); 
-  // Seed the database with one todo
+  await pool.query(
+    `TRUNCATE todos`
+  );
   const result = await pool.query(
     `INSERT INTO todos (title, userId, completed) 
      VALUES ('Initial Test Todo', 1, false) 
      RETURNING *`
   );
-  todoIdExist = result.rows[0].id; // Store the ID of the inserted todo
-});
-
-// Unit tests for health endpoint
-describe('GET /health', () => {
-  it('should return healthy message', async () => {
-    const response = await request(app).get('/health');
-    expect(response.statusCode).toBe(200);
-    expect(response.text).toBe('Healthy App');
-  });
+  todoIdExist = result.rows[0].id; 
 });
 
 // Integration tests for todos

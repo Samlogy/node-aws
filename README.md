@@ -10,13 +10,13 @@
 
 **front**
 
-- `docker build -t node-app .`
-- `docker run -p 4002:4002 node-app`
+- `docker build -t react-app .`
+- `docker run -p 4001:4001 react-app`
 
 **back**
 
-- `docker build -t react-app .`
-- `docker run -p 4001:4001 react-app`
+- `docker build -t node-app .`
+- `docker run -p 4002:4002 node-app`
 
 **full-stack**
 

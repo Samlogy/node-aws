@@ -10,4 +10,5 @@ COPY --from=build /app /app
 ENV NODE_ENV=production
 EXPOSE 4002
 RUN npm ci --only=production
-CMD ["node", "index.js"]
+RUN npm install pm2 -g
+CMD ["pm2-runtime", "index.js"]
