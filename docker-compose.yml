@@ -1,0 +1,71 @@
+# version: '3'
+
+# services:
+#   # react-app:
+#   #   build:
+#   #     context: ./client
+#   #     dockerfile: Dockerfile
+#   #   ports:
+#   #     - "4001:4001"
+#   #   environment:
+#   #     - NODE_ENV=production
+#   #   networks:
+#   #     - app-network
+
+#   node-app:
+#     build:
+#       context: ./server
+#       dockerfile: Dockerfile
+#     ports:
+#       - "4002:4002"
+#     environment:
+#       - NODE_ENV=production
+#     networks:
+#       - app-network
+
+# networks:
+#   app-network:
+#     driver: bridge
+
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: always
+    environment:
+      POSTGRES_DB: todos_db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"  
+
+  server:
+    build:
+      context: ./server
+    restart: always
+    environment:
+      DB_USER: user
+      DB_HOST: db
+      DB_NAME: todos_db
+      DB_PASSWORD: password
+      DB_PORT: 5432
+      PORT: 4002
+    depends_on:
+      - db
+    ports:
+      - "4002:4002"  
+
+  client:
+    build:
+      context: ./client
+    restart: always
+    ports:
+      - "4001:4001"
+    depends_on:
+      - server
+
+volumes:
+  postgres_data:
