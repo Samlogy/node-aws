@@ -1,10 +1,10 @@
 const request = require('supertest');
-const pool = require('../../db');
+// const pool = require('../../db');
 const app = require('../../index');
 
-beforeAll(async () => {
-  await pool.connect(); // Wait for the connection
-});
+// beforeAll(async () => {
+//   await pool.connect(); // Wait for the connection
+// });
 
 describe('GET /health', () => {
   it('should return healthy message', async () => {
@@ -13,4 +13,3 @@ describe('GET /health', () => {
     expect(response.text).toBe('Healthy App');
   });
 });
-

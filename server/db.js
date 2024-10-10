@@ -7,8 +7,8 @@ const options = {
   database: process.env.DB_NAME,
   password: process.env.DB_PASSWORD,
   port: process.env.DB_PORT,
-}
-  console.log('db => ', options)
+};
+console.log('db => ', options);
 const pool = new Pool(options);
 
 // Test the connection (optional)

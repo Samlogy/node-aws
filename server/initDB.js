@@ -1,4 +1,4 @@
-const pool = require("./db"); // Import the PostgreSQL connection pool
+const pool = require('./db'); // Import the PostgreSQL connection pool
 
 const initDB = async () => {
   try {
@@ -17,7 +17,7 @@ const initDB = async () => {
       const rowCount = parseInt(countResult.rows[0].count, 10);
 
       if (rowCount > 0) {
-        console.log("Todos table already exists and contains data.");
+        console.log('Todos table already exists and contains data.');
         return;
       }
     }
@@ -31,57 +31,58 @@ const initDB = async () => {
       );
     `;
     await pool.query(createTableQuery);
-    console.log("Todos table created.");
+    console.log('Todos table created.');
 
     const TODOS = [
       {
         userId: 1,
-        title: "delectus aut autem",
+        title: 'delectus aut autem',
         completed: false,
       },
       {
         userId: 1,
-        title: "quis ut nam facilis et officia qui",
+        title: 'quis ut nam facilis et officia qui',
         completed: false,
       },
       {
         userId: 1,
-        title: "fugiat veniam minus",
+        title: 'fugiat veniam minus',
         completed: false,
       },
       {
         userId: 1,
-        title: "et porro tempora",
+        title: 'et porro tempora',
         completed: true,
       },
       {
         userId: 1,
-        title: "laboriosam mollitia et enim quasi adipisci quia provident illum",
+        title:
+          'laboriosam mollitia et enim quasi adipisci quia provident illum',
         completed: false,
       },
       {
         userId: 1,
-        title: "qui ullam ratione quibusdam voluptatem quia omnis",
+        title: 'qui ullam ratione quibusdam voluptatem quia omnis',
         completed: false,
       },
       {
         userId: 1,
-        title: "illo expedita consequatur quia in",
+        title: 'illo expedita consequatur quia in',
         completed: false,
       },
       {
         userId: 1,
-        title: "quo adipisci enim quam ut ab",
+        title: 'quo adipisci enim quam ut ab',
         completed: true,
       },
       {
         userId: 1,
-        title: "molestiae perspiciatis ipsa",
+        title: 'molestiae perspiciatis ipsa',
         completed: false,
       },
       {
         userId: 1,
-        title: "illo est ratione doloremque quia maiores aut",
+        title: 'illo est ratione doloremque quia maiores aut',
         completed: true,
       },
     ];
@@ -95,9 +96,9 @@ const initDB = async () => {
       await pool.query(insertQuery, [todo.title, todo.userId, todo.completed]);
     }
 
-    console.log("DB todos added!");
+    console.log('DB todos added!');
   } catch (error) {
-    console.error("Error initializing database:", error);
+    console.error('Error initializing database:', error);
   }
 };
 

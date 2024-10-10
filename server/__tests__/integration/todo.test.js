@@ -2,19 +2,17 @@ const request = require('supertest');
 const pool = require('../../db');
 const app = require('../../index');
 
-let todoIdExist; 
+let todoIdExist;
 
 beforeAll(async () => {
-  await pool.connect(); 
-  await pool.query(
-    `TRUNCATE todos`
-  );
+  await pool.connect();
+  await pool.query(`TRUNCATE todos`);
   const result = await pool.query(
     `INSERT INTO todos (title, userId, completed) 
      VALUES ('Initial Test Todo', 1, false) 
      RETURNING *`
   );
-  todoIdExist = result.rows[0].id; 
+  todoIdExist = result.rows[0].id;
 });
 
 // Integration tests for todos
@@ -29,23 +27,23 @@ describe('Todos API', () => {
 
   describe('get a todo by id', () => {
     it('should fetch a todo by id', async () => {
-      const res = await request(app).get(`/todos/${todoIdExist}`); 
+      const res = await request(app).get(`/todos/${todoIdExist}`);
       expect(res.statusCode).toBe(200);
-      expect(res.body.id).toEqual(expect.any(Number));  // Check if ID is a number
+      expect(res.body.id).toEqual(expect.any(Number)); // Check if ID is a number
       expect(res.body.title).toEqual(expect.any(String)); // Check if title is a string
     });
-  
+
     it('should not find a todo by id', async () => {
       const res = await request(app).get(`/todos/${todoIdNotExist}`);
       expect(res.statusCode).toBe(404);
       expect(res.body.message).toBe('Todo not found'); // Ensure correct error message
     });
-  });  
+  });
 
   it('should create a new todo', async () => {
     const newTodo = { title: 'Test Todo 2', userId: 1, completed: false };
     const res = await request(app).post('/todos').send(newTodo);
-    console.log('rr => ', newTodo)
+    console.log('rr => ', newTodo);
     expect(res.statusCode).toBe(201);
     expect(res.body).toHaveProperty('id');
     expect(res.body.title).toBe(newTodo.title);
@@ -56,9 +54,9 @@ describe('Todos API', () => {
     it('should delete the todo', async () => {
       const res = await request(app).delete(`/todos/${todoIdExist}`);
       expect(res.statusCode).toBe(200);
-      expect(res.body.message).toBe('Todo deleted'); 
+      expect(res.body.message).toBe('Todo deleted');
     });
-  
+
     it('should not find the deleted todo', async () => {
       const res = await request(app).get(`/todos/${todoIdExist}`);
       expect(res.statusCode).toBe(404);
