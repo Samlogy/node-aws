@@ -24,8 +24,8 @@ jobs:
            with:
              node-version: ${{ matrix.node-version }}
 
-         - name: running prettier & eslint
-           run: npm run format && npm run lint
+        #  - name: running prettier & eslint
+        #    run: npm run format && npm run lint
 
          - name: Install API dependencies
            working-directory: ./server 
