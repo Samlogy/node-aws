@@ -14,6 +14,7 @@ services:
       - "5433:5432"  
 
   server:
+    image: sammmmmm/node-app:1.0
     build:
       context: ./server
     restart: always
@@ -30,6 +31,7 @@ services:
       - "4002:4002"  
 
   client:
+    image: sammmmmm/react-app:1.0
     build:
       context: ./client
     restart: always
