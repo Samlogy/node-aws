@@ -29,7 +29,7 @@ jobs:
 
          - name: Install API dependencies
            working-directory: ./server 
-           run: npm install
+           run: npm i
 
          - name: Build API
            working-directory: ./server
@@ -42,7 +42,7 @@ jobs:
          - name: Build Docker Image
            working-directory: ./server
            run: |
-              docker build -t "${{ secrets.DOCKER_USERNAME }}"/node-api .
+              docker build -t "${{ secrets.DOCKER_USERNAME }}/react-api:1.0" .
 
          - name: Run integration tests
            working-directory: ./server
