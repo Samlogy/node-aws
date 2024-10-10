@@ -1,12 +1,12 @@
 # FS App React + Node
 
-## Stack:
+## Stack
 
-- React, Node
-- Nginx
-- postgresql
-- Docker, docker compose
-- git, github
+- **front**: React, Nginx.
+- **back**: Node, Express, Postgresql
+- **testing**: jest, supertest
+- **devops**: Docker, docker compose, github actions, aws
+- **tools**: git, github
 
 **front**
 
@@ -23,6 +23,7 @@
 - `docker compose up --build`
 
 **check postgres db**
+
 - `psql -h localhost -U user -d todos_db -p 5433`
 
 **Getting started**
@@ -31,3 +32,29 @@
   `npm run dev` => front + back
 - prod:
   `docker compose up`
+
+## Run tests
+
+**unit / integration**
+
+- unit tests: `npm run test:unit`
+- integration tests: `npm run test:integration`
+- coverage tests: `npm run test:coverage`
+
+## Pipeline
+
+- **CI**
+  - **build** (stage)
+    - install dependencies && build react app (step),
+    - run unit tests (step),
+    - build docker image (step),
+
+  - **test** (stage)
+    - run integration tests (step),
+
+  - **release** (stage)
+    - push docker image to docker hub (step),
+
+- **CD** 
+  - pull docker image from docker hub,
+  - deploy docker image => aws

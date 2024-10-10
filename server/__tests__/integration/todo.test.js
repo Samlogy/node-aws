@@ -27,38 +27,42 @@ describe('Todos API', () => {
     expect(Array.isArray(response.body)).toBe(true); // Ensure response is an array
   });
 
-  it('should fetch a todo by id', async () => {
-    const res = await request(app).get(`/todos/${todoIdExist}`); 
-    expect(res.statusCode).toBe(200);
-    expect(res.body.id).toEqual(expect.any(Number));  // Check if ID is a number
-    expect(res.body.title).toEqual(expect.any(String)); // Check if title is a string
-  });
-
-  it('should not find a todo by id', async () => {
-    const res = await request(app).get(`/todos/${todoIdNotExist}`);
-    expect(res.statusCode).toBe(404);
-    expect(res.body.message).toBe('Todo not found'); // Ensure correct error message
-  });
+  describe('get a todo by id', () => {
+    it('should fetch a todo by id', async () => {
+      const res = await request(app).get(`/todos/${todoIdExist}`); 
+      expect(res.statusCode).toBe(200);
+      expect(res.body.id).toEqual(expect.any(Number));  // Check if ID is a number
+      expect(res.body.title).toEqual(expect.any(String)); // Check if title is a string
+    });
+  
+    it('should not find a todo by id', async () => {
+      const res = await request(app).get(`/todos/${todoIdNotExist}`);
+      expect(res.statusCode).toBe(404);
+      expect(res.body.message).toBe('Todo not found'); // Ensure correct error message
+    });
+  });  
 
   it('should create a new todo', async () => {
     const newTodo = { title: 'Test Todo 2', userId: 1, completed: false };
     const res = await request(app).post('/todos').send(newTodo);
     console.log('rr => ', newTodo)
     expect(res.statusCode).toBe(201);
-    expect(res.body).toHaveProperty('id'); // Ensure an ID is returned
+    expect(res.body).toHaveProperty('id');
     expect(res.body.title).toBe(newTodo.title);
-    todoIdExist = res.body.id; // Save the newly created todo ID for deletion
+    todoIdExist = res.body.id;
   });
 
-  it('should delete the todo', async () => {
-    const res = await request(app).delete(`/todos/${todoIdExist}`);
-    expect(res.statusCode).toBe(200);
-    expect(res.body.message).toBe('Todo deleted'); // Ensure deletion success message
-  });
-
-  it('should not find the deleted todo', async () => {
-    const res = await request(app).get(`/todos/${todoIdExist}`);
-    expect(res.statusCode).toBe(404);
-    expect(res.body.message).toBe('Todo not found');
+  describe('delete a todo by id', () => {
+    it('should delete the todo', async () => {
+      const res = await request(app).delete(`/todos/${todoIdExist}`);
+      expect(res.statusCode).toBe(200);
+      expect(res.body.message).toBe('Todo deleted'); 
+    });
+  
+    it('should not find the deleted todo', async () => {
+      const res = await request(app).get(`/todos/${todoIdExist}`);
+      expect(res.statusCode).toBe(404);
+      expect(res.body.message).toBe('Todo not found');
+    });
   });
 });
