@@ -2,15 +2,9 @@ name: API CI/CD Pipeline
 
 on:
   push:
-    paths:
-      - 'server/**'
-      - 'client/**'
     branches: ["main"]
 
   pull_request:
-    paths:
-      - 'server/**'
-      - 'client/**'
     branches: ["main"]
 
 jobs:
