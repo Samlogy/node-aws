@@ -16,48 +16,56 @@ jobs:
         node-version: [18.x]
     
     steps:
-         - name: Checkout repository
-           uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-         - name: Setup Node.js
-           uses: actions/setup-node@v3
-           with:
-             node-version: ${{ matrix.node-version }}
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
 
-         - name: running Prettier
-           run: npm run format:fix
+      # - name: running Prettier
+      #   working-directory: ./server 
+      #   run: npm run format:fix
 
-        #  - name: running Eslint
-        #    run: npm run lint
+      # - name: running Eslint
+      #   working-directory: ./server 
+      #   run: npm run lint
 
-         - name: Install API dependencies
-           working-directory: ./server 
-           run: npm i
+      - name: Install API dependencies
+        working-directory: ./server 
+        run: npm i
 
-         - name: Build API
-           working-directory: ./server
-           run: npm run build --if-present
+      - name: Build API
+        working-directory: ./server
+        run: npm run build --if-present
 
-        #  - name: Run unit tests
-        #    working-directory: ./server
-        #    run: npm run test:unit
-        
-         - name: Build Docker Image
-           working-directory: ./server
-           run: |
-              docker build -t "${{ secrets.DOCKER_USERNAME }}/node-app:1.0" .
+      # - name: Run unit tests
+      #   working-directory: ./server
+      #   run: npm run test:unit
 
-        #  - name: Run integration tests
-        #    working-directory: ./server
-        #    run: npm run test:integration
+      - name: Build Docker Image
+        working-directory: ./server
+        run: |
+          docker build -t "${{ secrets.DOCKER_USERNAME }}/node-app:1.0" .
 
-         - name: Log in => Docker Hub
-           run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-   
-         - name: Push Docker Image => Docker Hub
-           run: |
-             docker push "${{ secrets.DOCKER_USERNAME }}"/node-app:1.0
-  
+      # - name: Run integration tests
+      #   working-directory: ./server
+      #   run: npm run test:integration
+
+      - name: Log in => Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Push Docker Image => Docker Hub
+        run: |
+          docker push "${{ secrets.DOCKER_USERNAME }}"/node-app:1.0
+
+      - name: Deploy to Fly.io
+        uses: superfly/flyctl-actions/setup-flyctl@master
+        run: flyctl deploy --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
   client:
     runs-on: ubuntu-latest
 
