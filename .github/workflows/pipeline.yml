@@ -60,8 +60,10 @@ jobs:
         run: |
           docker push "${{ secrets.DOCKER_USERNAME }}"/node-app:1.0
 
-      - name: Deploy to Fly.io
+      - name: Setup Flyctl
         uses: superfly/flyctl-actions/setup-flyctl@master
+        
+      - name: Deploy to Fly.io
         run: flyctl deploy --remote-only
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
