@@ -44,17 +44,29 @@
 ## Pipeline
 
 - **CI**
+
   - **build** (stage)
+
     - install dependencies && build react app (step),
     - run unit tests (step),
     - build docker image (step),
 
   - **test** (stage)
+
     - run integration tests (step),
 
   - **release** (stage)
     - push docker image to docker hub (step),
 
-- **CD** 
+- **CD**
   - pull docker image from docker hub,
-  - deploy docker image => aws
+  - deploy docker image => flyio
+
+**fly io**
+
+- install fly.io
+- create an account on flyio
+- `flyctl auth login`
+- `flyctl launch`
+- add credit card
+- add token => `fly tokens create deploy -x 999999h`

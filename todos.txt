@@ -1,0 +1,15 @@
+TODO:
+create a pipeline ci/cd
+create aws account
+provision infra terraform 
+conf infra ansible
+manage cluster kube
+scalability ?
+
+
+DONE:
+change port dev/prod (react app)
+dockerize front + back => docker compose
+add postgresql logic to access my database (data) + seed database
+write unit & integration tests (api side)
+
