@@ -9,7 +9,7 @@ import { useState } from "react";
     e.preventDefault();
     if (inputValue.trim()) {
       addTodo(inputValue);
-      setInputValue(""); // clear input after adding
+      setInputValue("");
     }
   };
 

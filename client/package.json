@@ -4,10 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "test:unit": "jest --config=jest.unit.config.ts",
+    "test:integration": "jest --config=jest.integration.config.ts",
     "test": "jest",
     "dev": "vite",
     "build": "tsc && vite build",
-    "coverage": "npm test --coverage --watchAll --collectCoverageFrom='src/components/**/*.{ts,tsx}'",
+    "coverage": "jest --coverage --watchAll --collectCoverageFrom='src/components/**/*.{ts,tsx}'",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
@@ -21,7 +23,7 @@
     "@testing-library/jest-dom": "^6.3.0",
     "@testing-library/react": "^14.1.2",
     "@testing-library/user-event": "^14.5.2",
-    "@types/jest": "^29.5.11",
+    "@types/jest": "^29.5.13",
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",
     "@typescript-eslint/eslint-plugin": "^6.14.0",

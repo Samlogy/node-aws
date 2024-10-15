@@ -35,6 +35,14 @@
 
 ## Run tests
 
+### Back
+**unit / integration**
+
+- unit tests: `npm run test:unit`
+- integration tests: `npm run test:integration`
+- coverage tests: `npm run test:coverage`
+
+### Front
 **unit / integration**
 
 - unit tests: `npm run test:unit`

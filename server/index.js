@@ -54,6 +54,18 @@ app.post('/todos', async (req, res) => {
   }
 });
 
+app.delete('/todos/truncate', async (req, res) => {
+  try {
+    await pool.query('TRUNCATE TABLE todos RESTART IDENTITY CASCADE');
+    
+    res.status(200).json({ message: 'Todos table truncated successfully' });
+  } catch (error) {
+    console.error('Error truncating todos table:', error);
+    
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
 app.delete('/todos/:id', async (req, res) => {
   const id = parseInt(req.params.id); // Ensure the ID is an integer
   try {
@@ -71,6 +83,7 @@ app.delete('/todos/:id', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+
 
 app.listen(PORT, () => {
   initDB();
