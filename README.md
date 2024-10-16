@@ -49,6 +49,8 @@
 - integration tests: `npm run test:integration`
 - coverage tests: `npm run test:coverage`
 
+``https://dev.to/teyim/effortless-testing-setup-for-react-with-vite-typescript-jest-and-react-testing-library-1c48``
+
 ## Pipeline
 
 - **CI**
