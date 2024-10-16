@@ -17,39 +17,43 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    // install dependencies
-                    sh 'npm i'
-                    // build app
-                    sh 'npm run build'
-                    // run unit tests
-                    sh 'npm run test:unit'
-                    // build docker image
-                    sh 'docker build -t $DOCKER_CLIENT_IMG .'
+                    dir('./client') {
+                        // install dependencies
+                        sh 'npm i'
+                        // build app
+                        sh 'npm run build'
+                        // run unit tests
+                        sh 'npm run test:unit'
+                        // build docker image
+                        sh 'docker build -t $DOCKER_CLIENT_IMG .'
+                    }                    
                 }
             }
         }
 
         stage('Test') {
             steps {
-                script {
+                dir('./client') {
                     // run docker image
                     sh 'docker run $DOCKER_CLIENT_IMG'
 
                     // run integration tests
                     sh 'npm run test:integration'
-                }
+                } 
             }
         }
 
         stage('Release') {
             steps {
-                  // Connexion à Docker Hub
-                  withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
-                      sh "echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin"
-                  }
+                    dir('./client') {
+                        // Connexion à Docker Hub
+                        withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                            sh "echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin"
+                        }
 
-                  // push image to docker hub
-                  sh 'docker push $DOCKER_IMAGE_TAG'
+                        // push image to docker hub
+                        sh 'docker push $DOCKER_IMAGE_TAG'
+                    }                   
                 }
             }
         }
@@ -68,10 +72,20 @@ pipeline {
         //     }
         // }
 
+
     post {
+        success {
+            mail to: 'senanisammy@gmail.com', 
+                subject: "Succès du Build : ${currentBuild.fullDisplayName}", 
+                body: "Le pipeline a réussi."
+        }
+        failure {
+            mail to: 'senanisammy@gmail.com', 
+                subject: "Échec du Build : ${currentBuild.fullDisplayName}", 
+                body: "Le pipeline a échoué. Consultez les logs pour plus d'informations."
+        }
         always {
             script {
-                // Logout Docker Hub
                 sh 'docker logout'
             }
         }
