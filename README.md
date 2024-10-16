@@ -24,7 +24,7 @@
 
 **check postgres db**
 
-- `psql -h localhost -U user -d todos_db -p 5433`
+- `psql -h localhost -U myuser -d mydb -p 5433`
 
 **Getting started**
 

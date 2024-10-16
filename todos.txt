@@ -1,5 +1,7 @@
 TODO:
-create a pipeline ci/cd
+fix pipeline; integration test => code server + db ??
+
+create a pipeline ci/cd => jenkins
 create aws account
 provision infra terraform 
 conf infra ansible
@@ -11,5 +13,6 @@ DONE:
 change port dev/prod (react app)
 dockerize front + back => docker compose
 add postgresql logic to access my database (data) + seed database
-write unit & integration tests (api side)
-
+setup & write unit & integration tests (api side)
+setup & write unit & integration tests (client side)
+create a pipeline ci/cd => github actions
