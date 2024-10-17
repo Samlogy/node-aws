@@ -20,9 +20,9 @@ pipeline {
         stage('Build') {
             steps {
                 dir('./client') {
-                    sh 'sudo npm i'
-                    sh 'sudo npm run build'
-                    sh 'sudo docker build -t react-app .'
+                    sh 'npm i'
+                    sh 'npm run build'
+                    sh 'docker build -t react-app .'
                 }
             }
         }
@@ -30,7 +30,7 @@ pipeline {
         stage('Test') {
             steps {
                 dir('./client') {
-                    sh 'sudo docker run react-app'
+                    sh 'docker run react-app'
                 }
             }
         }
@@ -39,11 +39,11 @@ pipeline {
             steps {
                 dir('./client') {
                     withCredentials([usernamePassword(credentialsId: 'your-docker-credentials-id', usernameVariable: 'username', passwordVariable: 'password')]) {
-                        sh "sudo docker login -u ${username} -p ${password}"
-                        sh "sudo docker tag react-app ${DOCKER_CLIENT_IMG}:${BRANCH_NAME}"
-                        sh "sudo docker push ${DOCKER_CLIENT_IMG}:${BRANCH_NAME}"
-                        sh "sudo docker rmi ${DOCKER_CLIENT_IMG}:${BRANCH_NAME}"
-                        sh "sudo docker rmi react-app"
+                        sh "docker login -u ${username} -p ${password}"
+                        sh "docker tag react-app ${DOCKER_CLIENT_IMG}:${BRANCH_NAME}"
+                        sh "docker push ${DOCKER_CLIENT_IMG}:${BRANCH_NAME}"
+                        sh "docker rmi ${DOCKER_CLIENT_IMG}:${BRANCH_NAME}"
+                        sh "docker rmi react-app"
                         stash includes: 'docker-compose.yml', name: 'utils'
                     }
                 }
