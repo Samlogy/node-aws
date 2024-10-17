@@ -20,8 +20,12 @@ pipeline {
         stage('Build') {
             steps {
                 dir('./client') {
-                    sh 'npm i'
-                    sh 'npm run build'
+                    docker.image('node:18').inside {
+                        sh 'npm install'
+                        sh 'npm run build'
+                    }
+                    // sh 'npm i'
+                    // sh 'npm run build'
                     sh 'docker build -t react-app .'
                 }
             }
