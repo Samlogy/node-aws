@@ -7,6 +7,7 @@ pipeline {
     //     }
     // }
 
+    agent any
     environment {
         DOCKER_CLIENT_IMG='sammmmmm/react-app'
         BRANCH_NAME = "jenkins"
@@ -29,16 +30,6 @@ pipeline {
         }
 
         stage('Build') {
-            // steps {
-            //     script {
-            //         dir('./client') {
-            //             sh 'sudo npm i'
-            //             sh 'sudo npm run build'
-            //             // sh 'sudo npm run test:unit'
-            //             sh 'sudo docker build -t react-app .'
-            //         }                    
-            //     }
-            // }
             dir('./client') {
                 sh 'sudo npm i'
                 sh 'sudo npm run build'
@@ -48,12 +39,6 @@ pipeline {
         }
 
         stage('Test') {
-            // steps {
-            //     dir('./client') {
-            //         sh 'sudo docker run react-app'
-            //         // sh 'sudo npm run test:integration'
-            //     } 
-            // }
             dir('./client') {
                 sh 'sudo docker run react-app'
                 // sh 'sudo npm run test:integration'
@@ -61,25 +46,8 @@ pipeline {
         }
 
         stage('Release') {
-            // steps {
-            //         dir('./client') {
-            //             withCredentials([usernamePassword(credentialsId: 'sammmmmm', usernameVariable: 'username',
-            //     passwordVariable: 'password')]) {
-            //                 // sh "echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin"
-                            
-            //                 sh "sudo docker login -u $DOCKER_USERNAME -p $password"
-            //                 sh "sudo docker tag react-app $DOCKER_CLIENT_IMG:$BRANCH_NAME"
-            //                 sh "sudo docker push $DOCKER_CLIENT_IMG:$BRANCH_NAME"
-            //                 sh "sudo docker rmi $DOCKER_CLIENT_IMG:$BRANCH_NAME"
-            //                 sh "sudo docker rmi react-app"
-            //                 stash includes: 'docker-compose.yml', name: 'utils'
-
-            //             }
-            //             sh 'docker push $DOCKER_IMAGE_TAG'
-            //         }                   
-            //     }
             dir('./client') {
-                withCredentials([usernamePassword(credentialsId: 'sammmmmm', usernameVariable: 'username',
+                withCredentials([usernamePassword(credentialsId: DOCKER_USERNAME, usernameVariable: 'username',
         passwordVariable: 'password')]) {
                     // sh "echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin"
                     
