@@ -30,7 +30,7 @@ pipeline {
                         sh 'sudo npm i'
                         sh 'sudo npm run build'
                         // sh 'sudo npm run test:unit'
-                        sh 'sudo docker build -t $DOCKER_CLIENT_IMG .'
+                        sh 'sudo docker build -t react-app .'
                     }                    
                 }
             }
@@ -39,7 +39,7 @@ pipeline {
         stage('Test') {
             steps {
                 dir('./client') {
-                    sh 'sudo docker run $DOCKER_CLIENT_IMG'
+                    sh 'sudo docker run react-app'
                     // sh 'sudo npm run test:integration'
                 } 
             }
