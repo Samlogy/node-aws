@@ -1,6 +1,9 @@
 services:
   jenkins:
-    image:  jenkins/jenkins:lts
+    # image:  
+    build:
+      context: .
+      dockerfile: dockerfile.jenkins
     ports:
       - "8080:8080"
     volumes:
