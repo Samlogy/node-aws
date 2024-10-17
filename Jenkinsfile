@@ -1,11 +1,11 @@
 pipeline {
     // agent any
-    agent {
-        docker {
-            image 'node:18-alpine'
-            args '-v /var/run/docker.sock:/var/run/docker.sock'
-        }
-    }
+    // agent {
+    //     docker {
+    //         image 'node:18-alpine'
+    //         args '-v /var/run/docker.sock:/var/run/docker.sock'
+    //     }
+    // }
 
     environment {
         DOCKER_CLIENT_IMG='sammmmmm/react-app'
@@ -17,52 +17,82 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                git branch: "${BRANCH_NAME}", url: 'https://github.com/Samlogy/node-aws.git'
-            }
+        // stage('Checkout') {
+        //     steps {
+        //         git branch: "${BRANCH_NAME}", url: 'https://github.com/Samlogy/node-aws.git'
+        //     }
+        // }
+
+        stage("checkout") {
+            checkout scmGit(branches: [[name: "${BRANCH_NAME}"]], extensions: [], userRemoteConfigs: [[url: 'https://github.com/Samlogy/node-aws.git']])
+            commitSHA = sh(script: "git log -n 1 --pretty=format:'%H'", returnStdout: true)
         }
 
         stage('Build') {
-            steps {
-                script {
-                    dir('./client') {
-                        sh 'sudo npm i'
-                        sh 'sudo npm run build'
-                        // sh 'sudo npm run test:unit'
-                        sh 'sudo docker build -t react-app .'
-                    }                    
-                }
-            }
+            // steps {
+            //     script {
+            //         dir('./client') {
+            //             sh 'sudo npm i'
+            //             sh 'sudo npm run build'
+            //             // sh 'sudo npm run test:unit'
+            //             sh 'sudo docker build -t react-app .'
+            //         }                    
+            //     }
+            // }
+            dir('./client') {
+                sh 'sudo npm i'
+                sh 'sudo npm run build'
+                // sh 'sudo npm run test:unit'
+                sh 'sudo docker build -t react-app .'
+            }  
         }
 
         stage('Test') {
-            steps {
-                dir('./client') {
-                    sh 'sudo docker run react-app'
-                    // sh 'sudo npm run test:integration'
-                } 
+            // steps {
+            //     dir('./client') {
+            //         sh 'sudo docker run react-app'
+            //         // sh 'sudo npm run test:integration'
+            //     } 
+            // }
+            dir('./client') {
+                sh 'sudo docker run react-app'
+                // sh 'sudo npm run test:integration'
             }
         }
 
         stage('Release') {
-            steps {
-                    dir('./client') {
-                        withCredentials([usernamePassword(credentialsId: 'sammmmmm', usernameVariable: 'username',
-                passwordVariable: 'password')]) {
-                            // sh "echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin"
+            // steps {
+            //         dir('./client') {
+            //             withCredentials([usernamePassword(credentialsId: 'sammmmmm', usernameVariable: 'username',
+            //     passwordVariable: 'password')]) {
+            //                 // sh "echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin"
                             
-                            sh "sudo docker login -u $DOCKER_USERNAME -p $password"
-                            sh "sudo docker tag react-app $DOCKER_CLIENT_IMG:$BRANCH_NAME"
-                            sh "sudo docker push $DOCKER_CLIENT_IMG:$BRANCH_NAME"
-                            sh "sudo docker rmi $DOCKER_CLIENT_IMG:$BRANCH_NAME"
-                            sh "sudo docker rmi react-app"
-                            stash includes: 'docker-compose.yml', name: 'utils'
+            //                 sh "sudo docker login -u $DOCKER_USERNAME -p $password"
+            //                 sh "sudo docker tag react-app $DOCKER_CLIENT_IMG:$BRANCH_NAME"
+            //                 sh "sudo docker push $DOCKER_CLIENT_IMG:$BRANCH_NAME"
+            //                 sh "sudo docker rmi $DOCKER_CLIENT_IMG:$BRANCH_NAME"
+            //                 sh "sudo docker rmi react-app"
+            //                 stash includes: 'docker-compose.yml', name: 'utils'
 
-                        }
-                        sh 'docker push $DOCKER_IMAGE_TAG'
-                    }                   
+            //             }
+            //             sh 'docker push $DOCKER_IMAGE_TAG'
+            //         }                   
+            //     }
+            dir('./client') {
+                withCredentials([usernamePassword(credentialsId: 'sammmmmm', usernameVariable: 'username',
+        passwordVariable: 'password')]) {
+                    // sh "echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin"
+                    
+                    sh "sudo docker login -u $DOCKER_USERNAME -p $password"
+                    sh "sudo docker tag react-app $DOCKER_CLIENT_IMG:$BRANCH_NAME"
+                    sh "sudo docker push $DOCKER_CLIENT_IMG:$BRANCH_NAME"
+                    sh "sudo docker rmi $DOCKER_CLIENT_IMG:$BRANCH_NAME"
+                    sh "sudo docker rmi react-app"
+                    stash includes: 'docker-compose.yml', name: 'utils'
+
                 }
+                sh 'docker push $DOCKER_IMAGE_TAG'
+            } 
             }
         }
 
