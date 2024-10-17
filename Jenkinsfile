@@ -1,5 +1,11 @@
 pipeline {
-    agent any
+    // agent any
+    agent {
+        docker {
+            image 'node:18-alpine' // Utiliser une image Docker avec Node.js préinstallé
+            args '-v /var/run/docker.sock:/var/run/docker.sock' // Si tu as besoin d'utiliser Docker
+        }
+    }
 
     environment {
         DOCKER_CLIENT_IMG='sammmmmm/react-app:1.0'
