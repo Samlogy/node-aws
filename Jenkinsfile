@@ -2,8 +2,8 @@ pipeline {
     // agent any
     agent {
         docker {
-            image 'node:18-alpine' // Utiliser une image Docker avec Node.js préinstallé
-            args '-v /var/run/docker.sock:/var/run/docker.sock' // Si tu as besoin d'utiliser Docker
+            image 'node:18-alpine'
+            args '-v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
 
