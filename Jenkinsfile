@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         DOCKER_CLIENT_IMG='sammmmmm/react-app:1.0'
+        BRANCH_NAME = "jenkins"
         // AWS_EC2_IP = "YOUR_AWS_EC2_PUBLIC_IP" // Adresse IP de votre instance EC2
         // AWS_KEY_PATH = "/path/to/your/private-key.pem" // Chemin de la clé privée pour SSH
     }
@@ -10,7 +11,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/Samlogy/node-aws.git'
+                git branch: "${BRANCH_NAME}", url: 'https://github.com/Samlogy/node-aws.git'
             }
         }
 
