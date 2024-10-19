@@ -71,6 +71,7 @@ pipeline {
             steps {
                 script {
                     sh 'docker logout'
+                    junit 'test-results/junit.xml'
                 }
             }
         }
