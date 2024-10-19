@@ -1,13 +1,4 @@
 pipeline {
-    // agent {
-    //     docker {
-    //         image 'abhishekf5/maven-abhishek-docker-agent:v1'
-    //         args '--user root -v /var/run/docker.sock:/var/run/docker.sock' // mount Docker socket to access the host's Docker daemon
-    //     }
-    // }
-
-    // agent any
-    
     agent {
         docker {
             image 'node:18-alpine'
@@ -16,6 +7,7 @@ pipeline {
 
     environment {
         DOCKER_USERNAME = 'sammmmmm'
+        REPOS_NAME = 'react-app'
         DOCKER_CLIENT_IMG = 'sammmmmm/react-app'
         BRANCH_NAME = 'jenkins'
         REPOS_URL = 'https://github.com/Samlogy/node-aws.git'
@@ -38,14 +30,14 @@ pipeline {
                 sh 'cd client'                  
                 sh 'npm i'
                 sh 'npm run build'
-                sh 'sudo docker build -t react-app .'
+                sh "sudo docker build -t ${REPOS_NAME} ."
             }
         }
 
         stage('Test') {
             steps {
                 sh 'cd client' 
-                sh 'docker run react-app'
+                sh "docker run ${REPOS_NAME}"
             }
         }
 
@@ -54,10 +46,10 @@ pipeline {
                 sh 'cd client' 
                 withCredentials([usernamePassword(credentialsId: 'your-docker-credentials-id', usernameVariable: 'username', passwordVariable: 'password')]) {
                     sh "docker login -u ${username} -p ${password}"
-                    sh "docker tag react-app ${DOCKER_CLIENT_IMG}:${BRANCH_NAME}"
+                    sh "docker tag ${REPOS_NAME} ${DOCKER_CLIENT_IMG}:${BRANCH_NAME}"
                     sh "docker push ${DOCKER_CLIENT_IMG}:${BRANCH_NAME}"
                     sh "docker rmi ${DOCKER_CLIENT_IMG}:${BRANCH_NAME}"
-                    sh "docker rmi react-app"
+                    sh "docker rmi ${REPOS_NAME}"
                     stash includes: 'docker-compose.yml', name: 'utils'
                 }
             }
