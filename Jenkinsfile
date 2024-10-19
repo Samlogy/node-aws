@@ -18,10 +18,10 @@ pipeline {
         stage("Checkout") {
             steps {
                 checkout([$class: 'GitSCM', branches: [[name: "${BRANCH_NAME}"]], userRemoteConfigs: [[url: "${REPOS_URL}"]]])
-                script {
-                    commitSHA = sh(script: "git log -n 1 --pretty=format:'%H'", returnStdout: true)
-                    echo "Commit SHA: ${commitSHA}"
-                }
+                // script {
+                //     commitSHA = sh(script: "git log -n 1 --pretty=format:'%H'", returnStdout: true)
+                //     echo "Commit SHA: ${commitSHA}"
+                // }
             }
         }
 
