@@ -27,8 +27,8 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'cd client'                  
-                sh 'npm i'
+                // sh 'cd client'                  
+                sh 'npm ci'
                 sh 'npm run build'
                 sh "sudo docker build -t ${REPOS_NAME} ."
             }
