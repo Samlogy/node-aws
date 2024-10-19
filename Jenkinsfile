@@ -5,8 +5,15 @@ pipeline {
     //         args '--user root -v /var/run/docker.sock:/var/run/docker.sock' // mount Docker socket to access the host's Docker daemon
     //     }
     // }
-    agent any
+
+    // agent any
     
+    agent {
+        docker {
+            image 'node:18-alpine'
+        }
+    }
+
     environment {
         DOCKER_USERNAME = 'sammmmmm'
         DOCKER_CLIENT_IMG = 'sammmmmm/react-app'
